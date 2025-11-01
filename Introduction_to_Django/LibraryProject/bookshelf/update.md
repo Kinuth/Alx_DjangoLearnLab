@@ -8,7 +8,7 @@ Retrieve the book you want to update (e.g., the one with title "1984").
 book_to_update = Book.objects.get(title="1984")
 
 Modify the attribute (e.g., the title).
-book_to_update.title = "Nineteen Eighty-Four"
+book.title = "Nineteen Eighty-Four"
 
 Save the changes back to the database.
 book_to_update.save()
