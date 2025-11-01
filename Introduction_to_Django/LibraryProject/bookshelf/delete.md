@@ -8,7 +8,7 @@ Retrieve the book you want to delete (e.g., the one with the updated title "Nine
 book_to_delete = Book.objects.get(title="Nineteen Eighty-Four")
 
 Call the delete() method on the object.
-book_to_delete.delete()
+book.delete()
 
 Expected Output
 The delete() command will return a tuple indicating the number of objects deleted and a dictionary with the count per object type.
