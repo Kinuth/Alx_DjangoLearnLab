@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from . import views
 from .views import LibraryDetailView, SignUpView
 from .views import list_books
+from django.contrib.auth.views import LoginView, LogoutView
 
 
 app_name = 'relationship_app'
@@ -22,4 +23,17 @@ urlpatterns = [
              TemplateView.as_view(template_name='accounts/profile.html'),
              name='profile'),
     path("signup/", SignUpView.as_view(), name="templates/registration/signup"),
+    # 1. Registration View (Assuming a custom FBV named 'register')
+    path('register/', views.register, name='register'), 
+
+    # 2. Login View (Using Django's built-in CBV and specifying a template name)
+    path('login/',
+         LoginView.as_view(template_name='relationship_app/login.html'), 
+         name='login'),
+
+    # 3. Logout View (Using Django's built-in CBV and specifying a template name for confirmation/redirection)
+    path('logout/',
+         LogoutView.as_view(template_name='relationship_app/logged_out.html'), 
+         
+         name='logout'),
 ]
