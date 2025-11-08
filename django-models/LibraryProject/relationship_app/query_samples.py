@@ -36,14 +36,7 @@ def list_all_books_in_library(library_name):
     print(f"\n--- Query: Books in Library '{library_name}' ---")
     try:
         # 1. Find the specific Library instance
-        library_instance = Library.objects.get(name__iexact=library_name)
-
-        # 2. Query for all Books linked to that Library
-        # Using the reverse relationship manager (set by default by Django ORM)
-        books = library_instance.book_set.all()
-
-        # Alternatively, using a direct filter on the Book model:
-        # books = Book.objects.filter(library=library_instance)
+        books = Library.objects.get(name=library_name), books.all()
 
         print(f"Found {books.count()} books in {library_name}:")
         for book in books:
@@ -59,7 +52,7 @@ def list_all_books_in_library(library_name):
         return []
 
 
-def retrieve_librarian_for_library(library_name):
+def retrieve_librarian(library_name):
     """
     Retrieve the librarian for a library.
     Assumes a OneToOneField from 'Library' to 'Librarian'.
@@ -92,4 +85,4 @@ if __name__ == "__main__":
     # Sample queries
     query_books_by_author("J.K. Rowling")
     list_all_books_in_library("Central Library")
-    retrieve_librarian_for_library("Central Library")
+    retrieve_librarian("Central Library")
