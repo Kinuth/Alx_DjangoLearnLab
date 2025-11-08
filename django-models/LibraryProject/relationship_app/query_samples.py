@@ -10,10 +10,10 @@ def query_books_by_author(author_name):
     print(f"--- Query: Books by Author '{author_name}' ---")
     try:
         # 1. Find the specific Author instance
-        author_instance = Author.objects.get(name__iexact=author_name)
+        author= Author.objects.get(name=author_name)
 
         # 2. Query for all Books linked to that Author
-        books = Book.objects.filter(author=author_instance)
+        books = Book.objects.filter(author=author)
 
         print(f"Found {books.count()} books by {author_name}:")
         for book in books:
@@ -61,14 +61,14 @@ def retrieve_librarian(library_name):
     try:
         # 1. Find the specific Library instance, and simultaneously
         #    select the related 'librarian' object to minimize database queries (SELECT_RELATED)
-        library_instance = Library.objects.select_related('librarian').get(name__iexact=library_name)
+        Librarian = Library.objects.select_related('librarian').get(name=library_name)
 
         # 2. Access the related Librarian object via the field name
-        librarian_instance = library_instance.librarian
+        librarian = Librarian.librarian
 
-        if librarian_instance:
-            print(f"The librarian for {library_name} is: **{librarian_instance.name}**")
-            return librarian_instance
+        if librarian:
+            print(f"The librarian for {library_name} is: **{librarian.name}**")
+            return librarian
         else:
             print(f"No librarian assigned to {library_name}.")
             return None
