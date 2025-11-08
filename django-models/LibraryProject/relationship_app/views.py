@@ -27,3 +27,5 @@ class LibraryDetailView(DetailView):
         context['books'] = Library.books.select_related('author').all()
         context['view_type'] = 'Class_Based DetailView'
         return context
+    
+    
