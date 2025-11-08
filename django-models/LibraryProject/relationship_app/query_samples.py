@@ -2,26 +2,26 @@
 from relationship_app.models import Author, Book, Library, Librarian
 
 
-def query_books_by_author(author_name):
+def query_books_by_author(author):
     """
     Query all books by a specific author.
     Assumes a model 'Author' and a ForeignKey from 'Book' to 'Author'.
     """
-    print(f"--- Query: Books by Author '{author_name}' ---")
+    print(f"--- Query: Books by Author '{author}' ---")
     try:
         # 1. Find the specific Author instance
-        author_name= Author.objects.get(name=author_name)
+        author= Author.objects.get(name=author)
 
         # 2. Query for all Books linked to that Author
-        books = Book.objects.filter(author=author_name)
+        books = Book.objects.filter(author=author)
 
-        print(f"Found {books.count()} books by {author_name}:")
+        print(f"Found {books.count()} books by {author}:")
         for book in books:
             print(f"- {book.title}")
         return books
 
     except Author.DoesNotExist:
-        print(f"Error: Author named '{author_name}' not found.")
+        print(f"Error: Author named '{author}' not found.")
         return []
 
     except Exception as e:
@@ -61,7 +61,7 @@ def retrieve_librarian(library):
     try:
         # 1. Find the specific Library instance, and simultaneously
         #    select the related 'librarian' object to minimize database queries (SELECT_RELATED)
-        librarian = Librarian.objects.get(name=library)
+        librarian = Librarian.objects.get(library=library)
 
         # 2. Access the related Librarian object via the field name
         librarian = Librarian.librarian
