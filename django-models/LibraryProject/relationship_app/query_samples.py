@@ -61,7 +61,7 @@ def retrieve_librarian(library_name):
     try:
         # 1. Find the specific Library instance, and simultaneously
         #    select the related 'librarian' object to minimize database queries (SELECT_RELATED)
-        Librarian = Library.objects.select_related('librarian').get(name=library_name)
+        librarian = Librarian.objects.get(name=library_name)
 
         # 2. Access the related Librarian object via the field name
         librarian = Librarian.librarian
