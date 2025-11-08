@@ -2,20 +2,20 @@
 from relationship_app.models import Author, Book, Library, Librarian
 
 
-def query_books_by_author(author):
+def query_books_by_author(author_name):
     """
     Query all books by a specific author.
     Assumes a model 'Author' and a ForeignKey from 'Book' to 'Author'.
     """
-    print(f"--- Query: Books by Author '{author}' ---")
+    print(f"--- Query: Books by Author '{author_name}' ---")
     try:
         # 1. Find the specific Author instance
-        author_name= Author.objects.get(name=author)
+        author= Author.objects.get(name=author_name)
 
         # 2. Query for all Books linked to that Author
-        books = Book.objects.filter(author=author)
+        books = Book.objects.filter(author=Author)
 
-        print(f"Found {books.count()} books by {author}:")
+        print(f"Found {books.count()} books by {author_name}:")
         for book in books:
             print(f"- {book.title}")
         return books
