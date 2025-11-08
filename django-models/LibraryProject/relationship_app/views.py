@@ -12,7 +12,7 @@ def book_list(request):
         'view_type': 'Function_Based View',
         }
 
-    return render(request, 'relationship_app/book_list.html', context)
+    return render(request, 'relationship_app/list_books.html', context)
 class LibraryDetailView(DetailView):
     """
     Detail view for a specific library, showing its books.
