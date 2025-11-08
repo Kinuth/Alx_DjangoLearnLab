@@ -36,4 +36,8 @@ urlpatterns = [
          LogoutView.as_view(template_name='relationship_app/logged_out.html'), 
          
          name='logout'),
+
+    path('admin_area/', views.admin_view, name='admin_view'),
+    path('librarian_desk/', views.librarian_view, name='librarian_view'),
+    path('member_portal/', views.member_view, name='member_view'),
 ]

@@ -7,6 +7,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -69,3 +72,68 @@ def register(request):
     # Render the registration template
     return render(request, 'relationship_app/register.html', context)
 
+class detailView(DetailView):
+    model = Library
+    template_name = 'relationship_app/library_detail.html'
+    context_object_name = 'library'
+
+    def admin_view(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Library = self.object()
+        context['books'] = Library.books.select_related('author').all()
+        context['view_type'] = 'Class_Based DetailView'
+        return context
+    def librarian_view(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        Library = self.object()
+        context['books'] = Library.books.select_related('author').all()
+        context['view_type'] = 'Class_Based DetailView'
+        return context
+    def member_view(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Library = self.object()
+        context['books'] = Library.books.select_related('author').all()
+        context['view_type'] = 'Class_Based DetailView'
+        return context
+
+# --- Access Test Functions ---
+def is_admin(user):
+    """Checks if the user has the 'Admin' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Admin'
+
+def is_librarian(user):
+    """Checks if the user has the 'Librarian' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Librarian'
+
+def is_member(user):
+    """Checks if the user has the 'Member' role."""
+    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Member'
+
+# --- Role-Based Views ---
+
+# 1. Admin View
+@user_passes_test(is_admin, login_url='/login/') # Redirects non-Admin to /login/
+def admin_view(request):
+    """View only accessible by Admin users."""
+    return render(request, 'rbac_app/admin_view.html', {'role': 'Admin'})
+
+# 2. Librarian View
+@user_passes_test(is_librarian, login_url='/login/')
+def librarian_view(request):
+    """View only accessible by Librarian users."""
+    return render(request, 'rbac_app/librarian_view.html', {'role': 'Librarian'})
+
+# 3. Member View
+@user_passes_test(is_member, login_url='/login/')
+def member_view(request):
+    """View only accessible by Member users."""
+    return render(request, 'rbac_app/member_view.html', {'role': 'Member'})
+
+# Example of a view accessible by multiple roles (e.g., Librarian or Admin)
+def is_staff(user):
+    """Checks if the user is a Librarian or Admin."""
+    return is_admin(user) or is_librarian(user)
+
+@user_passes_test(is_staff, login_url='/login/')
+def staff_dashboard(request):
+    return HttpResponse("Welcome to the Staff Dashboard!")
