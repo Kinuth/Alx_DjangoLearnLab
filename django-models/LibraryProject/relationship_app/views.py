@@ -115,19 +115,19 @@ def is_member(user):
 @user_passes_test(is_admin, login_url='/login/') # Redirects non-Admin to /login/
 def admin_view(request):
     """View only accessible by Admin users."""
-    return render(request, 'rbac_app/admin_view.html', {'role': 'Admin'})
+    return render(request, 'relationship_app/admin_view.html', {'role': 'Admin'})
 
 # 2. Librarian View
 @user_passes_test(is_librarian, login_url='/login/')
 def librarian_view(request):
     """View only accessible by Librarian users."""
-    return render(request, 'rbac_app/librarian_view.html', {'role': 'Librarian'})
+    return render(request, 'relationship_app/librarian_view.html', {'role': 'Librarian'})
 
 # 3. Member View
 @user_passes_test(is_member, login_url='/login/')
 def member_view(request):
     """View only accessible by Member users."""
-    return render(request, 'rbac_app/member_view.html', {'role': 'Member'})
+    return render(request, 'relationship_app/member_view.html', {'role': 'Member'})
 
 # Example of a view accessible by multiple roles (e.g., Librarian or Admin)
 def is_staff(user):
