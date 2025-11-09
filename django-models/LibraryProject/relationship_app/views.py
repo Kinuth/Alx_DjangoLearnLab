@@ -1,6 +1,8 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic.detail import DetailView
+from django.contrib.auth.decorators import permission_required
 from .models import Book
+from .forms import BookForm
 from .models import Library
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -136,3 +138,41 @@ def is_staff(user):
 @user_passes_test(is_staff, login_url='/login/')
 def staff_dashboard(request):
     return HttpResponse("Welcome to the Staff Dashboard!")
+
+@permission_required('relationship_app.can_add_book', login_url='/login/')
+def book_add(request):
+    """View to add a new book entry."""
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list') # Assume 'book_list' is your main view
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
+
+@permission_required('relationship_app.can_change_book', login_url='/login/')
+def book_edit(request, pk):
+    """View to edit an existing book entry."""
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Edit'})
+
+@permission_required('relationship_app.can_delete_book', login_url='/login/')
+def book_delete(request, pk):
+    """View to delete a book entry."""
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('book_list')
+    # Use a specific template for confirmation
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
+
+# Note: Ensure you have a simple BookForm defined in forms.py and 
+# corresponding templates (book_form.html, book_confirm_delete.html, book_list).
