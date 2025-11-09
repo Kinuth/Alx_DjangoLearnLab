@@ -8,7 +8,6 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 
 
