@@ -93,19 +93,19 @@ def is_member(user):
 @user_passes_test(is_admin, login_url='/login/') # Redirects non-Admin to /login/
 def admin_view(request):
     """View only accessible by Admin users."""
-    return render(request, 'admin_view.html', {'role': 'Admin'})
+    return render(request, 'relationship_app/admin_view.html', {'role': 'Admin'})
 
 # 2. Librarian View
 @user_passes_test(is_librarian, login_url='/login/')
 def librarian_view(request):
     """View only accessible by Librarian users."""
-    return render(request, 'librarian_view.html', {'role': 'Librarian'})
+    return render(request, 'relationship_app/librarian_view.html', {'role': 'Librarian'})
 
 # 3. Member View
 @user_passes_test(is_member, login_url='/login/')
 def member_view(request):
     """View only accessible by Member users."""
-    return render(request, 'member_view.html', {'role': 'Member'})
+    return render(request, 'relationship_app/member_view.html', {'role': 'Member'})
 
 # Example of a view accessible by multiple roles (e.g., Librarian or Admin)
 def is_staff(user):
@@ -126,7 +126,7 @@ def add_book(request):
             return redirect('book_list') # Assume 'book_list' is your main view
     else:
         form = BookForm()
-    return render(request, 'book_form.html', {'form': form, 'action': 'Add'})
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
 
 @permission_required('relationship_app.can_change_book', login_url='/login/')
 def edit_book(request, pk):
@@ -139,7 +139,7 @@ def edit_book(request, pk):
             return redirect('book_list')
     else:
         form = BookForm(instance=book)
-    return render(request, 'book_form.html', {'form': form, 'action': 'Edit'})
+    return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Edit'})
 
 @permission_required('relationship_app.can_delete_book', login_url='/login/')
 def delete_book(request, pk):
@@ -149,6 +149,6 @@ def delete_book(request, pk):
         book.delete()
         return redirect('book_list')
     # Use a specific template for confirmation
-    return render(request, 'book_confirm_delete.html', {'book': book})
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
 
 
