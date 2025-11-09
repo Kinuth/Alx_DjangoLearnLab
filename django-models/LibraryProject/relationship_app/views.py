@@ -140,7 +140,7 @@ def staff_dashboard(request):
     return HttpResponse("Welcome to the Staff Dashboard!")
 
 @permission_required('relationship_app.can_add_book', login_url='/login/')
-def book_add(request):
+def add_book(request):
     """View to add a new book entry."""
     if request.method == 'POST':
         form = BookForm(request.POST)
@@ -152,7 +152,7 @@ def book_add(request):
     return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Add'})
 
 @permission_required('relationship_app.can_change_book', login_url='/login/')
-def book_edit(request, pk):
+def edit_book(request, pk):
     """View to edit an existing book entry."""
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
@@ -165,7 +165,7 @@ def book_edit(request, pk):
     return render(request, 'relationship_app/book_form.html', {'form': form, 'action': 'Edit'})
 
 @permission_required('relationship_app.can_delete_book', login_url='/login/')
-def book_delete(request, pk):
+def delete_book(request, pk):
     """View to delete a book entry."""
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
@@ -174,5 +174,4 @@ def book_delete(request, pk):
     # Use a specific template for confirmation
     return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
 
-# Note: Ensure you have a simple BookForm defined in forms.py and 
-# corresponding templates (book_form.html, book_confirm_delete.html, book_list).
+
