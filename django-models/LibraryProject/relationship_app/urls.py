@@ -42,11 +42,11 @@ urlpatterns = [
     path('member_portal/', views.member_view, name='member_view'),
 
     # URL pattern for adding a new book
-    path('add/book/', views.add_book, name='add_book'),
+    path('add_book/', views.add_book, name='add_book'),
 
     # URL pattern for editing an existing book (requires the book's primary key)
-    path('edit/book/<int:pk>/', views.edit_book, name='edit_book'),
+    path('edit_book/<int:pk>/', views.edit_book, name='edit_book'),
 
     # URL pattern for deleting a book (requires the book's primary key)
-    path('delete/book/<int:pk>/', views.delete_book, name='delete_book'),
+    path('delete_book/<int:pk>/', views.delete_book, name='delete_book'),
 ]
