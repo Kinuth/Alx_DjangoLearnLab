@@ -73,29 +73,6 @@ def register(request):
     # Render the registration template
     return render(request, 'relationship_app/register.html', context)
 
-class detailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html'
-    context_object_name = 'library'
-
-    def admin_view(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        Library = self.object()
-        context['books'] = Library.books.select_related('author').all()
-        context['view_type'] = 'Class_Based DetailView'
-        return context
-    def librarian_view(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        Library = self.object()
-        context['books'] = Library.books.select_related('author').all()
-        context['view_type'] = 'Class_Based DetailView'
-        return context
-    def member_view(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        Library = self.object()
-        context['books'] = Library.books.select_related('author').all()
-        context['view_type'] = 'Class_Based DetailView'
-        return context
 
 # --- Access Test Functions ---
 def is_admin(user):
