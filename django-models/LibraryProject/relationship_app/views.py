@@ -85,7 +85,7 @@ def is_librarian(user):
     return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Librarian'
 
 def is_member(user):
-   """
+    """
     Check if the user has at least 'Member' permissions.
     This view is accessible by Member, Librarian, and Admin roles.
     """
