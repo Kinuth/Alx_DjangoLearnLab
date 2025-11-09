@@ -110,7 +110,7 @@ def member_view(request):
 # Example of a view accessible by multiple roles (e.g., Librarian or Admin)
 def is_staff(user):
     """Checks if the user is a Librarian or Admin."""
-    return is_admin(user) or is_librarian(user)
+    return is_admin(user) or is_librarian(user) or is_member(user)
 
 @user_passes_test(is_staff, login_url='/login/')
 def staff_dashboard(request):
