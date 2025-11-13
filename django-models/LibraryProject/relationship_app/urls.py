@@ -11,6 +11,9 @@ from django.contrib.auth.views import LoginView, LogoutView
 app_name = 'relationship_app'
 
 urlpatterns = [
+    # Root home page - redirects to books list
+    path('', views.home, name='home'),
+    
     # Function-Based View (FBV): Lists all books
     path('books/', views.list_books, name='all_books'),
 
@@ -38,9 +41,7 @@ urlpatterns = [
          name='logout'),
 
     path('admin_area/', views.admin_view, name='admin_view'),
-    path('librarian_desk/', views.librarian_view, name='librarian_view'),
-    path('member_portal/', views.member_view, name='member_view'),
-
+   
     # URL pattern for adding a new book
     path('add_book/', views.add_book, name='add_book'),
 

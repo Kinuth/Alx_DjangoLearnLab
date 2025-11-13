@@ -14,6 +14,11 @@ from django.http import HttpResponse
 
 
 # Create your views here.
+def home(request):
+    """Home page view that redirects to books list."""
+    return redirect('relationship_app:all_books')
+
+
 def list_books(request):
     """
     View to list all books. 
@@ -80,20 +85,9 @@ def is_admin(user):
     """Checks if the user has the 'Admin' role."""
     return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Admin'
 
-def is_librarian(user):
-    """Checks if the user has the 'Librarian' role."""
-    return user.is_authenticated and hasattr(user, 'profile') and user.profile.role == 'Librarian'
 
-def is_member(user):
-    """
-    Check if the user has at least 'Member' permissions.
-    This view is accessible by Member, Librarian, and Admin roles.
-    """
-    if not (user.is_authenticated and hasattr(user, 'profile')):
-        return False
-    
     # Check if the user has any of the valid roles
-    return user.profile.role in ['Member', 'Librarian', 'Admin']
+    return user.profile.role in [ 'Admin']
 
 # --- Role-Based Views (Task Requirement) ---
 
@@ -104,31 +98,10 @@ def admin_view(request):
     """View only accessible by Admin users."""
     return render(request, 'relationship_app/admin_view.html')
 
-# 2. Librarian View
-@login_required
-@user_passes_test(is_librarian, login_url='/login/')
-def librarian_view(request):
-    """View only accessible by Librarian users."""
-    return render(request, 'relationship_app/librarian_view.html')
-
-# 3. Member View
-@login_required
-@user_passes_test(is_member, login_url='/login/')
-def member_view(request):
-    """View only accessible by Member users."""
-    return render(request, 'relationship_app/member_view.html')
 
 # --- Other Views ---
 
 # Example of a view accessible by multiple roles (e.g., Librarian or Admin)
-def is_staff(user):
-    """Checks if the user is a Librarian or Admin."""
-    # FIX: Removed 'or is_member(user)' to match docstring and logical intent
-    return is_admin(user) or is_librarian(user) 
-
-@user_passes_test(is_staff, login_url='/login/')
-def staff_dashboard(request):
-    return HttpResponse("Welcome to the Staff Dashboard!")
 
 @permission_required('relationship_app.can_add_book', login_url='/login/')
 def add_book(request):
