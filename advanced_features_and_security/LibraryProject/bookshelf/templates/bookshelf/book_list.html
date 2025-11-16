@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Search</title>
+</head>
+<body>
+
+    <h2>Search for a Book</h2>
+
+    <form action="" method="get">
+        <label for="id_query">Search:</label>
+        <input type="text" name="query" id="id_query" value="{{ query|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <hr>
+
+    {% if query %}
+        <h3>Showing results for: "{{ query }}"</h3>
+    {% endif %}
+
+    {% if books %}
+        <ul>
+            {% for book in books %}
+                <li>{{ book.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if query %}
+            <p>No books found matching your search.</p>
+        {% else %}
+            <p>Enter a term above to search for a book.</p>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
