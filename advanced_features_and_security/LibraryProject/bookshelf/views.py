@@ -1,37 +1,70 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Book
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 
-# --- TASK 2: ENFORCE PERMISSIONS IN VIEWS ---
 
-# This view is protected.
-# Only users with the 'bookshelf.can_view' permission can access it.
-# This permission can be assigned directly or via a group (e.g., "Viewers").
-@permission_required('bookshelf.can_view', raise_exception=True)
-def book_detail_view(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    return render(request, 'bookshelf/book_detail.html', {'book': book})
+# View to list all articles
+@login_required
+@permission_required('content.can_view', raise_exception=True)
+def book_list(request):
+    articles = Article.objects.all()
+    return render(request, 'content/article_list.html', {'articles': articles})
 
-# Only users with 'bookshelf.can_create' can access this view.
-@permission_required('bookshelf.can_create', raise_exception=True)
-def book_create_view(request):
-    # ... logic for creating a book (e.g., with a ModelForm) ...
-    return HttpResponse(f"Create Book Form (User: {request.user})")
+# View for a single article detail
+@login_required
+@permission_required('content.can_view', raise_exception=True)
+def book_detail(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    return render(request, 'content/article_detail.html', {'article': article})
 
-# Only users with 'bookshelf.can_edit' can access this view.
-@permission_required('bookshelf.can_edit', raise_exception=True)
-def book_edit_view(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    # ... logic for editing a book (e.g., with a ModelForm) ...
-    return HttpResponse(f"Editing Book: {book.title} (User: {request.user})")
+# View to create a new article
+@login_required
+@permission_required('content.can_create', raise_exception=True)
+def book_create(request):
+    # if request.method == 'POST':
+    #     form = ArticleForm(request.POST)
+    #     if form.is_valid():
+    #         article = form.save(commit=False)
+    #         article.author = request.user
+    #         article.save()
+    #         return redirect('article_detail', pk=article.pk)
+    # else:
+    #     form = ArticleForm()
+    # return render(request, 'content/article_form.html', {'form': form})
+    
+    # Simplified view for demonstration
+    return render(request, 'content/article_form.html', {'form': 'Your ArticleForm would be here'})
 
-# Only users with 'bookshelf.can_delete' can access this view.
-@permission_required('bookshelf.can_delete', raise_exception=True)
-def book_delete_view(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    # ... logic for deleting a book ...
-    return HttpResponse(f"Deleting Book: {book.title} (User: {request.user})")
+# View to edit an existing article
+@login_required
+@permission_required('content.can_edit', raise_exception=True)
+def book_edit(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    # if request.method == 'POST':
+    #     form = ArticleForm(request.POST, instance=article)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('article_detail', pk=article.pk)
+    # else:
+    #     form = ArticleForm(instance=article)
+    # return render(request, 'content/article_form.html', {'form': form})
+    
+    # Simplified view for demonstration
+    return render(request, 'content/article_form.html', {'form': 'Your ArticleForm would be here', 'article': article})
+
+# View to delete an article
+@login_required
+@permission_required('content.can_delete', raise_exception=True)
+def book_delete(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    # if request.method == 'POST':
+    #     article.delete()
+    #     return redirect('article_list')
+    # return render(request, 'content/article_confirm_delete.html', {'article': article})
+    
+    # Simplified view for demonstration
+    return render(request, 'content/article_confirm_delete.html', {'article': article})
 
 
 # --- TASK 3: SECURE DATA ACCESS (AVOIDING SQL INJECTION) ---
