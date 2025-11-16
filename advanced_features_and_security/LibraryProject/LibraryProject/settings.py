@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf.apps.BookshelfConfig',
+    'csp',  # For Content Security Policy
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',  # For Content Security Policy
     
 ]
 
@@ -151,13 +153,21 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 #SECURE_HSTS_PRELOAD = True
 
 # --- Task 3 & 4: Secure Cookies ---
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Redirect all non-HTTPS requests to HTTPS.
+SECURE_SSL_REDIRECT = True
+# Enable HTTP Strict Transport Security (HSTS)
+# Instructs browsers to only access the site via HTTPS.
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 # Ensures cookies are only sent over HTTPS.
-#CSRF_COOKIE_SECURE = True
-#SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # --- Task 3 & 4: Browser-Side Protections ---
 # Prevents the site from being framed (protects against clickjacking)
-X_FRAME_OPTIONS = 'DENY'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Prevents browser from MIME-sniffing content types
 SECURE_CONTENT_TYPE_NOSNIFF = True
