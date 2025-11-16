@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Book
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import SearchForm
+from .forms import ExampleForm
 
 # View to list all articles
 @login_required
