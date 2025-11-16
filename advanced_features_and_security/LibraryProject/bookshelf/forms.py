@@ -1,7 +1,7 @@
 from django import forms
 import bleach
 
-class SearchForm(forms.Form):
+class ExampleForm(forms.Form):
     """
     A form for searching books.
     This form handles validation and sanitization of user input.
