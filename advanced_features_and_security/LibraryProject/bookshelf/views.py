@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Book
 from django.contrib.auth.decorators import login_required, permission_required
-
+from .forms import SearchForm
 
 # View to list all articles
 @login_required
@@ -67,40 +67,54 @@ def book_delete(request, pk):
     return render(request, 'content/article_confirm_delete.html', {'article': article})
 
 
-# --- TASK 3: SECURE DATA ACCESS (AVOIDING SQL INJECTION) ---
-
-def book_search_view(request):
+def book_search(request):
     """
-    Demonstrates safe vs. unsafe query building.
+    A view to search for books.
+    This view demonstrates secure data handling.
     """
-    query = request.GET.get('q', '')
+    query = None
+    results = []
 
-    # -------------------------------------------------------------------
-    # VULNERABLE TO SQL INJECTION (DO NOT DO THIS)
-    # -------------------------------------------------------------------
-    # This method uses string formatting to build a raw SQL query.
-    # If a user enters: "'; DROP TABLE bookshelf_book; --"
-    # the query could become:
-    # "SELECT * FROM bookshelf_book WHERE title = ''; DROP TABLE bookshelf_book; --'"
-    # This is a classic SQL injection attack.
-    
-    # unsafe_results = Book.objects.raw(f"SELECT * FROM bookshelf_book WHERE title = '{query}'")
-    # print("Unsafe query:", unsafe_results.query) # For demonstration
+    if 'query' in request.GET:
+        # Step 3: Use a form to validate and sanitize user input.
+        form = SearchForm(request.GET)
 
-    # -------------------------------------------------------------------
-    # SAFE (USING DJANGO ORM)
-    # -------------------------------------------------------------------
-    # The Django ORM parameterizes the query. This means it separates
-    # the query logic from the user-supplied data.
-    # The database treats the 'query' variable as data only, not as
-    # an executable command. This prevents SQL injection.
-    
-    safe_results = Book.objects.filter(title__icontains=query)
-    
-    # This is also safe if you must use raw SQL, as it uses parameters:
-    # safe_raw_results = Book.objects.raw("SELECT * FROM bookshelf_book WHERE title = %s", [query])
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            
+            # -------------------------------------------------------------
+            # Step 3: Secure Data Access (Preventing SQL Injection)
+            # -------------------------------------------------------------
+            
+            # THE RIGHT WAY (Secure): Use the Django ORM.
+            # The ORM parameterizes queries, which means the user's
+            # input is treated as data, NOT as executable SQL code.
+            # This effectively stops all SQL injection attacks.
+            
+            results = Book.objects.filter(title__icontains=query)
 
-    return render(request, 'bookshelf/book_search_results.html', {
-        'results': safe_results,
+            # -------------------------------------------------------------
+            # THE WRONG WAY (INSECURE): Never do this!
+            # -------------------------------------------------------------
+            #
+            # from django.db import connection
+            #
+            # # This is VULNERABLE to SQL injection.
+            # # A user could enter: "'; DROP TABLE bookshelf_book; --"
+            #
+            # with connection.cursor() as cursor:
+            #     cursor.execute(f"SELECT * FROM bookshelf_book WHERE title LIKE '%{query}%'")
+            #     results = cursor.fetchall()
+            # -------------------------------------------------------------
+            
+        else:
+            # Form is invalid, 'results' will remain empty.
+            # You could also pass form.errors to the template.
+            pass
+
+    # 'query' is the sanitized data from the form,
+    # so it's safer to render back to the template if needed.
+    return render(request, 'bookshelf/book_list.html', {
+        'books': results,
         'query': query
     })
