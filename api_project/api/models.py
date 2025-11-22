@@ -7,3 +7,7 @@ class book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# Alias to provide a `Book` name expected elsewhere in the project
+Book = book
