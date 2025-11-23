@@ -151,6 +151,8 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 #SECURE_HSTS_SECONDS = 31536000  # 1 year
 #SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 #SECURE_HSTS_PRELOAD = True
+#security settings end
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # --- Task 3 & 4: Secure Cookies ---
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
