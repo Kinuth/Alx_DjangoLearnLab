@@ -39,13 +39,13 @@ def is_member(user):
 # --- Role-Based Views ---
 
 @user_passes_test(is_admin)
-def admin_view(request):
+def Admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
 @user_passes_test(is_librarian)
-def librarian_view(request):
+def Librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 @user_passes_test(is_member)
-def member_view(request):
+def Member_view(request):
     return render(request, 'relationship_app/member_view.html')
