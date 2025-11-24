@@ -24,28 +24,27 @@ class LibraryDetailView(DetailView):
     context_object_name = 'library'
 
 # --- Helper functions to check roles ---
-def check_role(user, role):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role
-
 def is_admin(user):
-    return check_role(user, 'Admin')
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
+# Helper function to check if a user is a Librarian
 def is_librarian(user):
-    return check_role(user, 'Librarian')
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
 
+# Helper function to check if a user is a Member
 def is_member(user):
-    return check_role(user, 'Member')
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
 # --- Role-Based Views ---
 
 @user_passes_test(is_admin)
-def Admin_view(request):
+def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
 @user_passes_test(is_librarian)
-def Librarian_view(request):
+def librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 @user_passes_test(is_member)
-def Member_view(request):
+def member_view(request):
     return render(request, 'relationship_app/member_view.html')
