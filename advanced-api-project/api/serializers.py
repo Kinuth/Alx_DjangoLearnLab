@@ -9,7 +9,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 # Serializer for Book model
 class BookSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(read_only=True) # Nested representation of Author
+    author = AuthorSerializer(many=True, read_only=True) # Nested representation of Author
 
     class Meta:
         model = Book
