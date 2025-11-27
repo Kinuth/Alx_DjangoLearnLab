@@ -1,17 +1,17 @@
 from django.db import models
 
-# Author model to represent book authors
+# Model for Author
 class Author(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-
-# Book model for storing book details  
+    
+# Model for Book
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    published_date = models.DateField()
+    author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
+    Published_year = models.DateField() 
 
     def __str__(self):
         return self.title
