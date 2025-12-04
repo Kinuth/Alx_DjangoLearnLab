@@ -13,11 +13,11 @@ def register(request):
             return redirect('login') # Redirect to login page after successful registration
     else:
         form = CustomUserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'blog/register.html', {'form': form})
 
 # Homepage view
 def home(request):
-    return render(request, 'users/home.html')
+    return render(request, 'blog/home.html')
 
 # profile management view
 @login_required
@@ -39,6 +39,6 @@ def profile(request):
         'u_form': u_form
     }
 
-    return render(request, 'users/profile.html', context)
+    return render(request, 'blog/profile.html', context)
         
     
