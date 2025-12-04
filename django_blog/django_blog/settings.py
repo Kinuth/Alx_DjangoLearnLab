@@ -146,6 +146,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static'] #Tells Django to look for static files in the 'static' directory at the project root
