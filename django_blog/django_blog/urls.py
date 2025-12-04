@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('blog.urls')),  # Include blog app URLs at root
+    path('users/', include('blog.urls')),  # Include blog app URLs
+    path('users/', include('django.contrib.auth.urls')),  # Include built-in auth URLs
+    
+
 ]

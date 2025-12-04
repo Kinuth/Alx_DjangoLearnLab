@@ -9,17 +9,17 @@ from .views import (
 
 urlpatterns = [
     # List all books (GET)
-    path('books/', BookListView.as_view(), name='book-list'),
+    path('', BookListView.as_view(), name='book-list'),
 
     # Retrieve a single book (GET)
-    path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
+    path('', BookDetailView.as_view(), name='book-detail'),
 
     # Create a new book (POST)
-    path('books/create/', BookCreateView.as_view(), name='book-create'),
+    path('', BookCreateView.as_view(), name='book-create'),
 
     # Update a book (PUT/PATCH)
-    path('books/update/<int:pk>/', BookUpdateView.as_view(), name='book-update'),
+    path('', BookUpdateView.as_view(), name='book-update'),
 
     # Delete a book (DELETE)
-    path('books/delete/<int:pk>/', BookDeleteView.as_view(), name='book-delete'),
+    path('', BookDeleteView.as_view(), name='book-delete'),
 ]
