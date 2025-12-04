@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Join Us</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                
+                {{ field }}
+                
+                {% if field.help_text %}
+                    <small class="helptext" style="color: #6c757d; display: block; margin-top: 5px;">
+                        {{ field.help_text|safe }}
+                    </small>
+                {% endif %}
+
+                {% if field.errors %}
+                    <div class="error-text">
+                        {% for error in field.errors %}
+                            <span style="color: red; font-size: 0.9em;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+    
+    <div class="auth-footer">
+        <small>Already have an account? <a href="{% url 'login' %}">Log In</a></small>
+    </div>
+</div>
+{% endblock %}
