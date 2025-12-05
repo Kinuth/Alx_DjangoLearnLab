@@ -1,18 +1,12 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% extends "blog/base.html" %}
 
 {% block content %}
-<div class="content-section">
+<div class="container">
+    <h2>Add Comment</h2>
     <form method="POST">
         {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Edit Comment</legend>
-            {{ form|crispy }}
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Update</button>
-            <a class="btn btn-outline-secondary" href="{% url 'detail_post' post.id %}">Cancel</a>
-        </div>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Post Comment</button>
     </form>
 </div>
-{% endblock content %}
+{% endblock %}

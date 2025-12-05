@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework.response import Response
 from django.http import HttpResponseForbidden
+from django.urls import reverse_lazy, reverse
 
 
 def register(request):
@@ -109,69 +110,44 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
     
 # Comment views
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    
-    # Handle the Comment Form Submission
-    if request.method == 'POST':
-        # You must be logged in to comment
-        if not request.user.is_authenticated:
-            return redirect('login')
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
 
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            # Create comment object but don't save to DB yet
-            comment = form.save(commit=False)
-            # Assign the current post and current user
-            comment.post = post
-            comment.author = request.user
-            # Save to DB
-            comment.save()
-            # Redirect back to the same page to show the new comment
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        return super().form_valid(form)
 
-    context = {
-        'post': post,
-        'form': form, # Pass the form to the template
-    }
-    return render(request, 'blog/post_detail.html', context)
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
         
-@login_required
-def comment_edit(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    
-    # Security: Only the author can edit
-    if comment.author != request.user:
-        return HttpResponseForbidden("You are not allowed to edit this comment.")
+# Class-based view for Editing Comments
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
-            # Redirect back to the post that owns this comment
-            return redirect('post_detail', pk=comment.post.pk)
-    else:
-        form = CommentForm(instance=comment)
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-    # We reuse the logic, but pass the 'post' object for the "Cancel" button link
-    return render(request, 'blog/add_comment.html', {
-        'form': form, 
-        'post': comment.post 
-    })
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
 
-@login_required
-def comment_delete(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    post_pk = comment.post.pk # Save this to redirect later
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
 
-    # Security: Only the author can delete
-    if comment.author != request.user:
-        return HttpResponseForbidden("You are not allowed to delete this comment.")
+# Class-based view for Deleting Comments
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
 
-    if request.method == 'POST':
-        comment.delete()
-        return redirect('post_detail', pk=post_pk)
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
 
-    return render(request, 'blog/delete_comment.html', {'object': comment})
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
