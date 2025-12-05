@@ -1,25 +1,16 @@
 {% extends "base.html" %}
-{% load static %} {% block content %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
-<div class="auth-container">
-    <h2>Login</h2>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
-        
-        {{ form.as_p }}
-
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    
-    <div class="auth-footer">
-        <small>Need an account? <a href="{% url 'register' %}">Sign Up Now</a></small>
+{% block content %}
+<div class="auth-wrapper"> <div class="auth-container">
+        <h2>Log In</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+        <div class="auth-footer">
+            <small>Need an account? <a href="{% url 'register' %}">Sign Up</a></small>
+        </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

@@ -2,10 +2,13 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, UserUpdateForm
 from django.contrib import messages
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework.response import Response
+from django.http import HttpResponseForbidden
+
 
 def register(request):
     if request.method == 'POST':
@@ -21,7 +24,10 @@ def register(request):
 
 # Homepage view
 def home(request):
-    return render(request, 'blog/home.html')
+    context = {
+        'posts': Post.objects.all().order_by('-published_date')
+    }
+    return render(request, 'blog/home.html', context)
 
 # profile management view
 @login_required
@@ -102,6 +108,70 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
     
-
-        
+# Comment views
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
     
+    # Handle the Comment Form Submission
+    if request.method == 'POST':
+        # You must be logged in to comment
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            # Create comment object but don't save to DB yet
+            comment = form.save(commit=False)
+            # Assign the current post and current user
+            comment.post = post
+            comment.author = request.user
+            # Save to DB
+            comment.save()
+            # Redirect back to the same page to show the new comment
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+
+    context = {
+        'post': post,
+        'form': form, # Pass the form to the template
+    }
+    return render(request, 'blog/post_detail.html', context)
+        
+@login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    
+    # Security: Only the author can edit
+    if comment.author != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this comment.")
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            # Redirect back to the post that owns this comment
+            return redirect('post_detail', pk=comment.post.pk)
+    else:
+        form = CommentForm(instance=comment)
+
+    # We reuse the logic, but pass the 'post' object for the "Cancel" button link
+    return render(request, 'blog/add_comment.html', {
+        'form': form, 
+        'post': comment.post 
+    })
+
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post_pk = comment.post.pk # Save this to redirect later
+
+    # Security: Only the author can delete
+    if comment.author != request.user:
+        return HttpResponseForbidden("You are not allowed to delete this comment.")
+
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('post_detail', pk=post_pk)
+
+    return render(request, 'blog/delete_comment.html', {'object': comment})

@@ -46,3 +46,22 @@ class PostForm(forms.ModelForm):
         if not content or len(content.strip()) == 0:
             raise forms.ValidationError('Content cannot be empty.')
         return content
+
+# Form for adding comments to a post
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your comment here',
+                'rows': 4
+            })
+        }
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if not content or len(content.strip()) == 0:
+            raise forms.ValidationError('Comment cannot be empty.')
+        return content

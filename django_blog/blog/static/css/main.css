@@ -1,146 +1,144 @@
 /* main.css */
 
-/* --- General Page Reset --- */
+/* --- 1. Global Reset & Layout --- */
 body {
     background-color: #f4f6f9;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    color: #333;
+    /* REMOVED: display: flex, justify-content, align-items (This was breaking your blog layout) */
+}
+
+/* Container to center content horizontally, not vertically */
+.container {
+    max-width: 800px; /* Limits width for better readability */
+    margin: 0 auto;   /* Centers the container */
+    padding: 20px;
+}
+
+/* --- 2. Navigation Bar (New Addition) --- */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px 0;
+    margin-bottom: 30px;
+}
+
+.navbar-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.nav-links a {
+    color: #555;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+/* --- 3. Blog Post Cards --- */
+.post-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    padding: 25px;
+    margin-bottom: 25px; /* Spacing between posts */
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid transparent; /* invisible border for hover effect */
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #007bff;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.post-title {
+    margin: 0 0 10px 0;
+    font-size: 1.75rem;
+}
+
+.post-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.post-title a:hover {
+    color: #007bff;
+}
+
+.post-content {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* --- 4. Auth/Profile Containers (Keep existing logic but adjust centering) --- */
+.auth-wrapper {
+    /* Use this wrapper only for login/register pages to center them */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 80vh;
 }
 
-/* --- Authentication Card Container --- */
-.auth-container, .profile-container {
+.auth-container {
     background-color: #ffffff;
     width: 100%;
     max-width: 400px;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin: 20px;
 }
 
-h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 25px;
-}
-
-/* --- Form Elements --- */
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #666;
-    font-weight: 600;
-}
-
-/* Style standard Django inputs */
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box; /* Ensures padding doesn't break width */
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-input:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-/* --- Buttons --- */
+/* --- 5. Buttons & Forms (Your existing styles refined) --- */
 .btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
+    display: inline-block;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    text-align: center;
     text-decoration: none;
-    margin-top: 10px;
     transition: background 0.3s;
 }
 
-.btn-primary {
-    background-color: #007bff; /* Blue */
-    color: white;
-}
+.btn-primary { background-color: #007bff; color: white; }
+.btn-primary:hover { background-color: #0056b3; }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-}
+.btn-danger { background-color: #dc3545; color: white; }
+.btn-danger:hover { background-color: #bd2130; }
 
-.btn-secondary {
-    background-color: #6c757d; /* Grey */
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #545b62;
-}
-
-.btn-danger {
-    background-color: #dc3545; /* Red */
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #bd2130;
-}
-
-/* --- Feedback & Alerts --- */
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.alert.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert.error, .error-text {
-    color: #dc3545;
-    font-size: 0.9em;
-    margin-top: 5px;
-}
-
-.helptext {
-    display: block;
-    font-size: 0.8em;
-    color: #888;
-    margin-top: 5px;
-}
-
-/* --- Footer Links --- */
-.auth-footer {
-    text-align: center;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.auth-footer a {
+.btn-outline {
+    background: transparent;
+    border: 1px solid #007bff;
     color: #007bff;
-    text-decoration: none;
 }
-
-.auth-footer a:hover {
-    text-decoration: underline;
+.btn-outline:hover {
+    background: #007bff;
+    color: white;
 }
