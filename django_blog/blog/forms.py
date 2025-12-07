@@ -34,10 +34,7 @@ class PostForm(forms.ModelForm):
                 'placeholder': 'Enter post content',
                 'rows': 8
             }),
-            'tags': TagWidget(attrs={
-                'class': 'form-control',
-                'placeholder': 'comma, separated, tags'
-            }),
+            'tags': TagWidget(),
       }
 
     def clean_title(self):
