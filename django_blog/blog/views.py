@@ -9,6 +9,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from rest_framework.response import Response
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
+from taggit.models import Tag
 
 
 def register(request):
@@ -22,6 +24,9 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'blog/register.html', {'form': form})
+
+# redirect after logout to login page
+
 
 # Homepage view
 def home(request):
@@ -81,7 +86,7 @@ def update_post(request, pk):
         if form.is_valid():
             # No need for commit=False here as author is already set
             form.save()
-            return redirect('detail_post', pk=post.pk)
+            return redirect('post_detail', pk=post.pk)
     else:
         # Pre-populate form with existing data
         form = PostForm(instance=post)
@@ -143,7 +148,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 # Class-based view for Deleting Comments
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
-    template_name = 'blog/comment_confirm_delete.html'
+    template_name = 'blog/delete_comment.html'
 
     def test_func(self):
         comment = self.get_object()
@@ -151,3 +156,23 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+# View to display posts by tag
+def search_posts(request):
+    query = request.GET.get('q')
+    results = []
+    
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) | 
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct() # distinct() is crucial here to avoid duplicate results
+        
+    return render(request, 'blog/search_results.html', {'query': query, 'results': results})
+
+def post_list_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags__in=[tag])
+    
+    return render(request, 'blog/post_list_by_tag.html', {'tag': tag, 'posts': posts})
