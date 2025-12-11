@@ -22,4 +22,5 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # For login/logout views
     path('', include('accounts.urls')),  # Include accounts app URLs
     path('api/', include('posts.urls')),  # Include posts app URLs
+    path('notifications/', include('notifications.urls')),  # Include notifications app URLs
 ]
