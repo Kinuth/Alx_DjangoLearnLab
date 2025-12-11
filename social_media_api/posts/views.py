@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Post, Comment
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsAuthorOrReadOnly 
 from .pagination import StandardResultsSetPagination
@@ -33,3 +33,16 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+# View for User Feed
+class UserFeedView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        # Get the list of users the current user is following
+        following_users = self.request.user.following.all()
+        
+        # Filter posts where the author is in the 'following_users' list
+        # Order by creation date (descending)
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')

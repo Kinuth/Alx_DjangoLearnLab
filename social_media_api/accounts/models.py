@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(BaseUserManager):
     """
@@ -35,21 +36,28 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
-class User(models.Model):
+class User(AbstractUser):
     username = None  # Remove username field
     email = models.EmailField(('email address'), unique=True)
-    bio = models.TextField(blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True)
-    followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
+    following = models.ManyToManyField(
+        'self', 
+        symmetrical=False, 
+        related_name='followers'
+    )
+
+    def __str__(self):
+        return self.usernam
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     
+    objects = CustomUserManager()
+
     def __str__(self):
         return self.email
     
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField('accounts.User', on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True)
     followers = models.ManyToManyField(User, related_name='profile_followers', blank=True)
