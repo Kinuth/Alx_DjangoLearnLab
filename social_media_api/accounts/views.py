@@ -11,6 +11,7 @@ from .serializers import  ProfileSerializer, UserSerializer
 from rest_framework.response import Response
 
 User = get_user_model()
+CustomUser = get_user_model()   
 
 # Registration View
 class RegisterView(generics.CreateAPIView):
@@ -52,10 +53,10 @@ class ProfileView(generics.RetrieveUpdateAPIView):
   
 class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
 
     def post(self, request, pk=None):
-        user_to_follow = get_object_or_404(User, pk=pk)
+        user_to_follow = get_object_or_404(CustomUser, pk=pk)
         
         # Prevent users from following themselves
         if user_to_follow == request.user:
@@ -66,10 +67,10 @@ class FollowUserView(generics.GenericAPIView):
 
 class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
 
     def post(self, request, pk=None):
-        user_to_unfollow = get_object_or_404(User, pk=pk)
+        user_to_unfollow = get_object_or_404(CustomUser, pk=pk)
         
         request.user.following.remove(user_to_unfollow)
         return Response({"message": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
