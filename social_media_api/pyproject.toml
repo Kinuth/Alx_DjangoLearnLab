@@ -1,0 +1,11 @@
+[project]
+name = "social_media_api"
+version = "0.1.0"
+dependencies = [
+    "psycopg2-binary==2.9.11",
+]
+
+[tool.uv]
+managed = true
+# This forces uv to never try building psycopg2 from source
+no-build = ["psycopg2"]
