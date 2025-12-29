@@ -1,4 +1,0 @@
-# Force Vercel to use requirements.txt instead of the strict uv builder
-pyproject.toml
-poetry.lock
-uv.lock
