@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "social_media_api/wsgi.py"
+      "source": "/(.*)",
+      "destination": "social_media_api/wsgi.py"
     }
   ]
 }
