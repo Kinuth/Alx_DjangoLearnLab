@@ -6,6 +6,6 @@ dependencies = [
 ]
 
 [tool.uv]
-managed = true
-# This forces uv to never try building psycopg2 from source
-no-build = ["psycopg2"]
+# This line is the magic fix: it tells Vercel's builder
+# NEVER to try and build psycopg2 from source code.
+no-build = ["psycopg2", "psycopg2-binary"]

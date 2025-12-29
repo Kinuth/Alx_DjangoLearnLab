@@ -3,9 +3,14 @@
   "builds": [
     {
       "src": "social_media_api/wsgi.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": { "runtime": "python3.12" }
     }
   ],
+  "env": {
+    "PYTHON_VERSION": "3.12",
+    "PIP_ONLY_BINARY": "psycopg2,psycopg2-binary"
+  },
   "routes": [
     {
       "src": "/(.*)",
