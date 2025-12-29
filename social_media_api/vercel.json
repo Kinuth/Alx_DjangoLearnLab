@@ -1,12 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "social_media_api/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "runtime": "python3.11" }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
