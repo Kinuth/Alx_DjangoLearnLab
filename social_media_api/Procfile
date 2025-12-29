@@ -1,1 +1,0 @@
-web: gunicorn rykin-media.wsgi --log-file -
