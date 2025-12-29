@@ -1,11 +1,20 @@
 [project]
 name = "social_media_api"
 version = "0.1.0"
+description = "Modern Django deployment on Vercel"
+readme = "README.md"
+requires-python = ">=3.11"
 dependencies = [
+    "django>=5.0",
     "psycopg2-binary==2.9.11",
+    "dj-database-url>=2.1.0",
+    "whitenoise>=6.6.0",
+    "gunicorn>=21.2.0",
+    "djangorestframework>=3.14.0",
+    "djangorestframework-simplejwt>=5.3.1",
 ]
 
 [tool.uv]
-# This line is the magic fix: it tells Vercel's builder
-# NEVER to try and build psycopg2 from source code.
-no-build = ["psycopg2", "psycopg2-binary"]
+# This is the "Modern" way to fix the pg_config error.
+# It tells uv: "Under no circumstances should you try to build these from source."
+no-build-package = ["psycopg2", "psycopg2-binary"]
